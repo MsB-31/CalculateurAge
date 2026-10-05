@@ -6,9 +6,12 @@ public class CalculateurViewModel : BaseViewModel
     // Champs privés : la vraie donnée.
     private string _nom = "";
     private string _erreur = "";
+    private string _statut = "";
     private DateTime _dateNaissance
         = DateTime.Today.AddYears(-20);
     private string _resultat = "";
+    private bool _resultatVisible;
+    private string _joursRestants = "";
 
     // Propriétés publiques : ce que le XAML voit.
     public string Nom
@@ -50,6 +53,21 @@ public class CalculateurViewModel : BaseViewModel
         get => _resultat;
         set => SetField(ref _resultat, value);
     }
+    public string Statut
+    {
+        get => _statut;
+        set => SetField(ref _statut, value);
+    }
+    public string JoursRestants
+    {
+        get => _joursRestants;
+        set => SetField(ref _joursRestants, value);
+    }
+    public bool ResultatVisible
+    {
+        get => _resultatVisible;
+        set => SetField(ref _resultatVisible, value);
+    }
 
     // Lié à Button.Command dans le XAML.
     public RelayCommand CalculerCommand { get; }
@@ -60,6 +78,20 @@ public class CalculateurViewModel : BaseViewModel
         Nom = "";
         DateNaissance = DateTime.Today.AddYears(-20);
         Resultat = "";
+        Statut = "";
+        JoursRestants = "";
+        ResultatVisible = false;
+    }
+
+    private static DateTime ProchainAnniversaire(DateTime naissance)
+    {
+        DateTime Pour(int an) => new(an, naissance.Month,
+            Math.Min(naissance.Day, DateTime.DaysInMonth(an, naissance.Month)));
+
+        var prochain = Pour(DateTime.Today.Year);
+        if (prochain < DateTime.Today)
+            prochain = Pour(DateTime.Today.Year + 1);
+        return prochain;
     }
 
     public CalculateurViewModel()
@@ -77,5 +109,12 @@ public class CalculateurViewModel : BaseViewModel
         int age = DateTime.Today.Year - DateNaissance.Year;
         if (DateNaissance.Date > DateTime.Today.AddYears(-age)) age--;
         Resultat = $"{Nom}, vous avez {age} ans";
+        Statut = age >= 18 ? "Majeur" : "Mineur";
+
+        int jours = (ProchainAnniversaire(DateNaissance) - DateTime.Today).Days;
+        JoursRestants = jours == 0
+            ? "Joyeux anniversaire !"
+            : $"Prochain anniversaire dans {jours} jour(s)";
+        ResultatVisible = true;
     }
 }
