@@ -21,6 +21,14 @@
                      IsVisible="{Binding ResultatVisible}"/>
                  <Label Text="{Binding JoursRestants}"
                      IsVisible="{Binding ResultatVisible}"/>
+                <Label Text="Historique" FontAttributes="Bold"/>
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Historique}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding .}"/>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
 

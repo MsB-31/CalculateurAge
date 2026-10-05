@@ -1,4 +1,6 @@
-﻿namespace CalculateurAge.ViewModels;
+﻿using System.Collections.ObjectModel;
+
+namespace CalculateurAge.ViewModels;
 
 // Contient l'ÉTAT de l'écran et les ACTIONS possibles.
 public class CalculateurViewModel : BaseViewModel
@@ -68,6 +70,7 @@ public class CalculateurViewModel : BaseViewModel
         get => _resultatVisible;
         set => SetField(ref _resultatVisible, value);
     }
+    public ObservableCollection<string> Historique { get; } = new();
 
     // Lié à Button.Command dans le XAML.
     public RelayCommand CalculerCommand { get; }
@@ -109,6 +112,7 @@ public class CalculateurViewModel : BaseViewModel
         int age = DateTime.Today.Year - DateNaissance.Year;
         if (DateNaissance.Date > DateTime.Today.AddYears(-age)) age--;
         Resultat = $"{Nom}, vous avez {age} ans";
+        Historique.Insert(0, $"{Nom} : {age} ans");
         Statut = age >= 18 ? "Majeur" : "Mineur";
 
         int jours = (ProchainAnniversaire(DateNaissance) - DateTime.Today).Days;
